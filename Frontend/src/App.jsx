@@ -1,14 +1,12 @@
-import { useState } from "react";
-import Login from "./pages/Login";
-import Tasks from "./pages/Tasks";
+import { AuthProvider } from "./auth/AuthContext";
+import AppRouter from "./router/AppRouter";
+import "./App.css";
 
 function App() {
-  const [isAuth, setIsAuth] = useState(!!localStorage.getItem("token"));
-
-  return isAuth ? (
-    <Tasks />
-  ) : (
-    <Login onLogin={() => setIsAuth(true)} />
+  return (
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
   );
 }
 
