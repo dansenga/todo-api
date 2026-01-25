@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../auth/useAuth';
 import TodoForm from '../components/TodoForm';
 import api from '../api/axios';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchTasks();
@@ -18,7 +18,7 @@ const Dashboard = () => {
       const response = await api.get('/tasks');
       setTasks(response.data);
     } catch (err) {
-      setError('Erreur lors du chargement des tâches');
+      toast.error(err.userMessage || 'Erreur lors du chargement des tâches');
       console.error(err);
     } finally {
       setLoading(false);
@@ -29,9 +29,11 @@ const Dashboard = () => {
     try {
       const response = await api.post('/tasks', taskData);
       setTasks([response.data, ...tasks]);
+      toast.success('Tâche ajoutée avec succès !');
     } catch (err) {
-      setError('Erreur lors de l\'ajout de la tâche');
+      toast.error(err.userMessage || 'Erreur lors de l\'ajout de la tâche');
       console.error(err);
+      throw err; // Re-throw to let TodoForm handle it
     }
   };
 
@@ -42,8 +44,9 @@ const Dashboard = () => {
         completed: !task.completed
       });
       setTasks(tasks.map(t => t.id === taskId ? response.data : t));
+      toast.success(response.data.completed ? 'Tâche complétée !' : 'Tâche réactivée');
     } catch (err) {
-      setError('Erreur lors de la mise à jour de la tâche');
+      toast.error(err.userMessage || 'Erreur lors de la mise à jour');
       console.error(err);
     }
   };
@@ -52,14 +55,16 @@ const Dashboard = () => {
     try {
       await api.delete(`/tasks/${taskId}`);
       setTasks(tasks.filter(t => t.id !== taskId));
+      toast.success('Tâche supprimée avec succès');
     } catch (err) {
-      setError('Erreur lors de la suppression de la tâche');
+      toast.error(err.userMessage || 'Erreur lors de la suppression');
       console.error(err);
     }
   };
 
   const handleLogout = () => {
     logout();
+    toast.success('Déconnexion réussie');
   };
 
   if (loading) {
@@ -77,8 +82,6 @@ const Dashboard = () => {
           </button>
         </div>
       </header>
-
-      {error && <div className="error-message">{error}</div>}
 
       <main className="dashboard-main">
         <section className="add-task-section">
