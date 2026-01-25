@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
+import { validateLogin } from '../utils/validation';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
@@ -13,14 +15,24 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+
+    // Frontend validation
+    const { isValid, errors: validationErrors } = validateLogin(email, password);
+
+    if (!isValid) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
     setLoading(true);
 
     try {
       await login(email, password);
+      toast.success('Connexion réussie !');
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Identifiants incorrects');
+      toast.error(err.userMessage || 'Identifiants incorrects');
     } finally {
       setLoading(false);
     }
@@ -30,8 +42,6 @@ const Login = () => {
     <div className="login-container">
       <h2>Connexion</h2>
 
-      {error && <div className="error-message">{error}</div>}
-
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="email">Email</label>
@@ -39,10 +49,14 @@ const Login = () => {
             type="email"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (errors.email) setErrors({ ...errors, email: '' });
+            }}
             placeholder="Votre email"
-            required
+            className={errors.email ? 'error' : ''}
           />
+          {errors.email && <span className="error-text">{errors.email}</span>}
         </div>
 
         <div className="form-group">
@@ -51,11 +65,14 @@ const Login = () => {
             type="password"
             id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (errors.password) setErrors({ ...errors, password: '' });
+            }}
             placeholder="Votre mot de passe"
-            required
-            minLength={8}
+            className={errors.password ? 'error' : ''}
           />
+          {errors.password && <span className="error-text">{errors.password}</span>}
         </div>
 
         <button type="submit" disabled={loading}>

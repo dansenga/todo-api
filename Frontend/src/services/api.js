@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleApiError, isAuthError } from "../utils/errorHandler";
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
@@ -16,5 +17,25 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Gestion globale des erreurs
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const errorInfo = handleApiError(error);
+
+    // Si erreur d'authentification, rediriger vers login
+    if (isAuthError(error)) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
+    // Enrichir l'erreur avec les informations formatées
+    error.userMessage = errorInfo.message;
+    error.userErrors = errorInfo.errors || {};
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;
