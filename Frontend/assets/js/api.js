@@ -126,12 +126,14 @@ const API = {
     },
 
     // Tâches
-    async getTasks() {
-        return this.get('/tasks');
+    async getTasks(filters = {}) {
+        const params = new URLSearchParams(filters);
+        const query = params.toString();
+        return this.get(`/tasks${query ? '?' + query : ''}`);
     },
 
-    async createTask(title) {
-        return this.post('/tasks', { title, completed: false });
+    async createTask(taskData) {
+        return this.post('/tasks', taskData);
     },
 
     async updateTask(id, data) {
@@ -140,6 +142,23 @@ const API = {
 
     async deleteTask(id) {
         return this.delete(`/tasks/${id}`);
+    },
+
+    // Catégories
+    async getCategories() {
+        return this.get('/categories');
+    },
+
+    async createCategory(categoryData) {
+        return this.post('/categories', categoryData);
+    },
+
+    async updateCategory(id, data) {
+        return this.put(`/categories/${id}`, data);
+    },
+
+    async deleteCategory(id) {
+        return this.delete(`/categories/${id}`);
     },
 
     // Vérifier si l'utilisateur est authentifié

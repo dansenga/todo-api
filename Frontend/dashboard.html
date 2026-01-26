@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TaskFlow - Tableau de bord">
-    <title>TaskFlow - Dashboard</title>
+    <meta name="description" content="TaskFlow Pro - Gestion de tâches avancée">
+    <title>TaskFlow Pro - Dashboard</title>
     
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
@@ -15,6 +15,7 @@
     
     <!-- Styles & Fonts -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/dashboard-advanced.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -36,13 +37,12 @@
                                 </linearGradient>
                             </defs>
                         </svg>
-                        <span class="logo-text">TaskFlow</span>
+                        <span class="logo-text">TaskFlow Pro</span>
                     </div>
                 </div>
                 <div class="nav-right">
                     <button class="theme-toggle" id="themeToggle" title="Changer le thème">
                         <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <!-- Sun icon (default) -->
                             <circle cx="12" cy="12" r="5"></circle>
                             <line x1="12" y1="1" x2="12" y2="3"></line>
                             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -89,12 +89,18 @@
                 <header class="page-header">
                     <div>
                         <h1 class="page-title">Mes Tâches</h1>
-                        <p class="page-subtitle">Gérez vos tâches efficacement</p>
+                        <p class="page-subtitle">Gérez vos tâches avec priorités et catégories</p>
                     </div>
+                    <button class="btn btn-primary" id="categoryModalBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Gérer Catégories
+                    </button>
                 </header>
 
                 <!-- Stats Cards -->
-                <div class="stats-grid" id="statsGrid">
+                <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon stat-icon-primary">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -148,29 +154,73 @@
                     </div>
                 </div>
 
-                <!-- Task Section -->
-                <div class="task-section">
-                    <!-- Add Task Form -->
-                    <div class="task-form-card">
-                        <form id="taskForm" class="task-form">
-                            <input 
-                                type="text" 
-                                id="taskInput" 
-                                placeholder="Ajouter une nouvelle tâche..."
-                                class="task-input"
-                                required
-                            >
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                                Ajouter
-                            </button>
-                        </form>
-                    </div>
+                <!-- Add Task Form -->
+                <div class="task-form-card">
+                    <form id="taskForm" class="task-form-advanced">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="taskInput">Titre de la tâche *</label>
+                                <input 
+                                    type="text" 
+                                    id="taskInput" 
+                                    placeholder="Ex: Préparer la présentation..."
+                                    class="form-control"
+                                    required
+                                >
+                            </div>
+                        </div>
 
-                    <!-- Filter Tabs -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="taskDescription">Description (optionnel)</label>
+                                <textarea 
+                                    id="taskDescription" 
+                                    placeholder="Détails de la tâche..."
+                                    class="form-control"
+                                    rows="2"
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="taskPriority">Priorité</label>
+                                <select id="taskPriority" class="form-control">
+                                    <option value="low">🟢 Basse</option>
+                                    <option value="medium" selected>🟡 Moyenne</option>
+                                    <option value="high">🔴 Élevée</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="taskCategory">Catégorie</label>
+                                <select id="taskCategory" class="form-control">
+                                    <option value="">Aucune</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="taskDueDate">Date d'échéance</label>
+                                <input 
+                                    type="date" 
+                                    id="taskDueDate" 
+                                    class="form-control"
+                                >
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Ajouter la tâche
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="filters-container">
                     <div class="filter-tabs">
                         <button class="filter-tab active" data-filter="all">
                             Toutes <span class="tab-badge" id="allCount">0</span>
@@ -183,34 +233,124 @@
                         </button>
                     </div>
 
-                    <!-- Task List -->
-                    <div class="task-list-card">
-                        <div id="taskList" class="task-list">
-                            <!-- Tasks will be inserted here -->
-                        </div>
-                        <div id="emptyState" class="empty-state" style="display: none;">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <path d="M9 11l3 3L22 4"></path>
-                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    <div class="filters-right">
+                        <div class="search-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
                             </svg>
-                            <h3>Aucune tâche</h3>
-                            <p>Commencez par ajouter votre première tâche</p>
+                            <input 
+                                type="text" 
+                                id="searchInput" 
+                                placeholder="Rechercher une tâche..."
+                                class="search-input"
+                            >
                         </div>
+
+                        <select id="priorityFilter" class="filter-select">
+                            <option value="">Toutes priorités</option>
+                            <option value="high">🔴 Élevée</option>
+                            <option value="medium">🟡 Moyenne</option>
+                            <option value="low">🟢 Basse</option>
+                        </select>
+
+                        <select id="sortBy" class="filter-select">
+                            <option value="created_at-desc">Plus récentes</option>
+                            <option value="created_at-asc">Plus anciennes</option>
+                            <option value="title-asc">A → Z</option>
+                            <option value="title-desc">Z → A</option>
+                            <option value="priority-desc">Priorité ↓</option>
+                            <option value="due_date-asc">Date d'échéance ↑</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Task List -->
+                <div class="task-list-card">
+                    <div id="taskList" class="task-list">
+                        <!-- Tasks will be inserted here -->
+                    </div>
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                        <h3>Aucune tâche trouvée</h3>
+                        <p>Commencez par ajouter votre première tâche ou ajustez vos filtres</p>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="toast" class="toast"></div>
+    <!-- Modal Catégories -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Gérer les Catégories</h2>
+                <button class="modal-close" id="closeCategoryModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm" class="category-form">
+                    <div class="form-group">
+                        <label for="categoryName">Nom de la catégorie *</label>
+                        <input 
+                            type="text" 
+                            id="categoryName" 
+                            class="form-control" 
+                            placeholder="Ex: Travail, Personnel..."
+                            required
+                        >
+                    </div>
 
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="categoryColor">Couleur</label>
+                            <input 
+                                type="color" 
+                                id="categoryColor" 
+                                class="form-control-color" 
+                                value="#6366f1"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="categoryIcon">Icône (emoji)</label>
+                            <input 
+                                type="text" 
+                                id="categoryIcon" 
+                                class="form-control" 
+                                placeholder="📁"
+                                maxlength="2"
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Créer la catégorie
+                    </button>
+                </form>
+
+                <div id="categoryList" class="category-list">
+                    <!-- Categories will be listed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="assets/js/config.js"></script>
     <script src="assets/js/utils.js"></script>
-    <script>
-        // Initialiser le thème au chargement de la page
-        Utils.initTheme();
-    </script>
     <script src="assets/js/api.js"></script>
-    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/dashboard-v2.js"></script>
 </body>
 </html>

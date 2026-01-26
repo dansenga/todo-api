@@ -9,12 +9,17 @@ class Task extends Model
 {
     protected $fillable = [
         'title',
+        'description',
         'completed',
+        'priority',
+        'category_id',
+        'due_date',
         'user_id'
     ];
 
     protected $casts = [
-        'completed' => 'boolean'
+        'completed' => 'boolean',
+        'due_date' => 'date'
     ];
 
     /**
@@ -23,5 +28,13 @@ class Task extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the category that the task belongs to.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 }
