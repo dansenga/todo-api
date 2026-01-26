@@ -1,36 +1,37 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
+import { Spinner } from '../components/ui';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
 
-// Composant pour protéger les routes privées
+// Protected Route Component
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   
   if (loading) {
-    return <div className="loading">Chargement...</div>;
+    return <Spinner.Screen message="Vérification de l'authentification..." />;
   }
   
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
-// Composant pour les routes publiques (rediriger si déjà connecté)
+// Public Route Component (redirect if already logged in)
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   
   if (loading) {
-    return <div className="loading">Chargement...</div>;
+    return <Spinner.Screen message="Chargement..." />;
   }
   
-  return !isAuthenticated ? children : <Navigate to="/dashboard" />;
+  return !isAuthenticated ? children : <Navigate to="/dashboard" replace />;
 };
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Routes publiques */}
+        {/* Public Routes */}
         <Route
           path="/login"
           element={
@@ -48,7 +49,7 @@ const AppRouter = () => {
           }
         />
         
-        {/* Routes privées */}
+        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
@@ -58,9 +59,9 @@ const AppRouter = () => {
           }
         />
         
-        {/* Redirection par défaut */}
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        {/* Default Redirects */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

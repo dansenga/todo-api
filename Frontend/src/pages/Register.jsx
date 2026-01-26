@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Mail, Lock, User } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
 import { validateRegister } from '../utils/validation';
+import { AuthLayout } from '../components/layout';
+import { Button, Input } from '../components/ui';
 import toast from 'react-hot-toast';
 
 const Register = () => {
@@ -18,12 +21,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Frontend validation
     const { isValid, errors: validationErrors } = validateRegister(
-      name,
-      email,
-      password,
-      passwordConfirmation
+      name, email, password, passwordConfirmation
     );
 
     if (!isValid) {
@@ -48,80 +47,105 @@ const Register = () => {
     }
   };
 
+  const clearError = (field) => {
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
   return (
-    <div className="register-container">
-      <h2>Inscription</h2>
+    <AuthLayout 
+      title="Créer un compte" 
+      subtitle="Commencez à organiser vos tâches dès maintenant"
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <Input
+          label="Nom complet"
+          type="text"
+          icon={User}
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            clearError('name');
+          }}
+          placeholder="Jean Dupont"
+          error={errors.name}
+          autoComplete="name"
+        />
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name">Nom</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              if (errors.name) setErrors({ ...errors, name: '' });
-            }}
-            className={errors.name ? 'error' : ''}
-          />
-          {errors.name && <span className="error-text">{errors.name}</span>}
-        </div>
+        <Input
+          label="Adresse email"
+          type="email"
+          icon={Mail}
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            clearError('email');
+          }}
+          placeholder="vous@exemple.com"
+          error={errors.email}
+          autoComplete="email"
+        />
 
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (errors.email) setErrors({ ...errors, email: '' });
-            }}
-            className={errors.email ? 'error' : ''}
-          />
-          {errors.email && <span className="error-text">{errors.email}</span>}
-        </div>
+        <Input
+          label="Mot de passe"
+          type="password"
+          icon={Lock}
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            clearError('password');
+          }}
+          placeholder="Minimum 8 caractères"
+          error={errors.password}
+          autoComplete="new-password"
+        />
 
-        <div className="form-group">
-          <label htmlFor="password">Mot de passe</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              if (errors.password) setErrors({ ...errors, password: '' });
-            }}
-            className={errors.password ? 'error' : ''}
-          />
-          {errors.password && <span className="error-text">{errors.password}</span>}
-        </div>
+        <Input
+          label="Confirmer le mot de passe"
+          type="password"
+          icon={Lock}
+          value={passwordConfirmation}
+          onChange={(e) => {
+            setPasswordConfirmation(e.target.value);
+            clearError('passwordConfirmation');
+          }}
+          placeholder="Répétez votre mot de passe"
+          error={errors.passwordConfirmation}
+          autoComplete="new-password"
+        />
 
-        <div className="form-group">
-          <label htmlFor="passwordConfirmation">Confirmer le mot de passe</label>
-          <input
-            type="password"
-            id="passwordConfirmation"
-            value={passwordConfirmation}
-            onChange={(e) => {
-              setPasswordConfirmation(e.target.value);
-              if (errors.passwordConfirmation) setErrors({ ...errors, passwordConfirmation: '' });
-            }}
-            className={errors.passwordConfirmation ? 'error' : ''}
-          />
-          {errors.passwordConfirmation && <span className="error-text">{errors.passwordConfirmation}</span>}
-        </div>
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Inscription...' : 'S\'inscrire'}
-        </button>
+        <Button
+          type="submit"
+          loading={loading}
+          fullWidth
+          size="lg"
+        >
+          Créer mon compte
+        </Button>
       </form>
 
-      <p>
-        Déjà un compte ? <Link to="/login">Se connecter</Link>
-      </p>
-    </div>
+      <div className="mt-6">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="bg-white px-4 text-gray-500">
+              Déjà inscrit ?
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <Link to="/login">
+            <Button variant="outline" fullWidth>
+              Se connecter
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </AuthLayout>
   );
 };
 
