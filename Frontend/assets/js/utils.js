@@ -1,5 +1,27 @@
 // Utilitaires généraux
 const Utils = {
+    // Gestion du thème
+    initTheme() {
+        const savedTheme = localStorage.getItem(CONFIG.THEME_KEY) || 'light';
+        this.setTheme(savedTheme);
+    },
+
+    setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(CONFIG.THEME_KEY, theme);
+    },
+
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        this.setTheme(newTheme);
+        return newTheme;
+    },
+
+    getCurrentTheme() {
+        return document.documentElement.getAttribute('data-theme') || 'light';
+    },
+
     // Afficher un toast
     showToast(message, type = 'success') {
         const toast = document.getElementById('toast');

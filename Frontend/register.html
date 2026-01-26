@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="TaskFlow - Créer un compte">
     <title>TaskFlow - Inscription</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TaskFlow">
+    
+    <!-- Styles & Fonts -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,6 +118,10 @@
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/utils.js"></script>
+    <script>
+        // Initialiser le thème
+        Utils.initTheme();
+    </script>
     <script src="assets/js/api.js"></script>
     <script src="assets/js/register.js"></script>
 </body>
